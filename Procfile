@@ -1,0 +1,1 @@
+web: gunicorn blacknet.wsgi --log-file -
