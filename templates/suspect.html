@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load filter_tag %}
+    {% block head %}
+    <title>Suspect List</title>
+    <link href="{% static 'css/suspect.css' %}" rel="stylesheet" />x
+    {% endblock %}
+    {% block content %}
+    <div style="height: 70px;"></div>
+
+    <div class="container">
+        <h1 style="color: #666;font-size: 3em;letter-spacing: 0.1em;text-align: center;margin: 1em 0;">SUSPECT LIST</h1>
+    </div>
+    <div style="background: linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,0.05),rgba(0,0,0,0));padding: 2em 0;">
+        <div class="container">
+            <div class="suspect-container-grid">
+                {% for suspect in data %}
+                <div class="suspect-profile">
+                    <div class="suspect-profile-upper">
+                        <img class="suspect-profile-img" src="{{suspect.profile_photo}}" />
+                        <div style="display: flex;flex-direction: column;justify-content: center;">
+                            <div class="h3"> {{suspect.name}} </div>
+                            <div class="h5" style="font-weight: normal;"> ({{suspect.username}}) </div class="h5">
+                        </div>
+                    </div>
+                    <div style="height: 1.5em;"></div>
+                    <div style="padding: 1em;padding-top: 0;">
+
+                        <div class="social-grid">
+                            <span class="social-change-number">{{suspect.followers_count}}</span><!--Followers-->
+                            <span class="social-change-number">{{suspect.following_count}}</span><!--Following-->
+                            <span class="social-change-number">{{suspect.tweets_count}}</span><!--Tweets-->
+                            <span>Followers</span>
+                            <span>Following</span>
+                            <span>Tweets</span>
+                        </div>
+                        <a href="https://twitter.com/{{suspect.username}}" target="_blank" class="suspect-btn">View Profile</a>
+                        <form method="POST" action="{% url 'twitterPage' %}" class="suspect-btn1">
+                            {% csrf_token %}
+                            <input type="hidden" name="usernames" value="{{suspect.username}}" />
+                            <input type="submit" class="form-btn" value="View Results" id="GetUserNameBtn-main" onclick="waitKey();" />
+                        </form>
+                        <div class="suspect-btn" id="suspect-{{suspect.username}}" onclick="addSuspect1('{{suspect.username}}');">Remove from Suspect List</div>
+                    </div>
+                    <div style="height: 1em;"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div style="height: 2em;"></div>
+    {% endblock %}

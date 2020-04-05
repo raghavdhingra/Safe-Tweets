@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load filter_tag %}
+    {% block head %}
+    <title>Twitter Integration</title>
+    <link href="{% static 'css/twitterErr.css' %}" rel="stylesheet" />
+    {% endblock %}
+    {% block content %}
+    <div style="height: 70px;"></div>
+
+    <div class="container">
+        <div style="height: 3em;"></div>
+        <div class="twitter-heading"><i class="fab fa-twitter"></i> Twitter Hate Analyser</div>
+        <div style="height: 2em;"></div>
+        <div style="font-size: 1.2em;">Please Enter List of Twitter Username or Hashtags to get their data: </div>
+        <form method="POST" action="{% url 'twitterPage' %}">
+            {% csrf_token %}
+            <input class="userNameTextField" name="usernames" type="text" placeholder="#raghav, or raghavdhingra15 (List seperated by commas)" id="userName" />
+            <input type="submit" class="GetUserNameBtn" value="Get Data" id="GetUserNameBtn-main" onclick="waitKey();" />
+        </form>
+    </div>
+
+    {% if error %}
+    <div style="height: 3em;"></div>
+    <div class="container">
+        <div style="font-size: 1.5em;font-weight: bold;color: red;">Error</div>
+        <div style="height: 1em;"></div>
+        <div style="font-size: 1.2em;color: #666;font-weight: bold;"> {{error}} </div>
+    </div>
+    {% endif %}
+
+    {% if data1 %}
+    <div class="user-container">
+        <div class="container">
+            <div style="height: 3em;"></div>
+            <div class="profile"></div>
+
+            <div style="font-size: 2em;font-weight: bold;margin: 1em 0;">"{{hashtag}}" results</div>
+            <div style="height: 1em;"></div>
+            <div class="twitter-table-container">
+                <table>
+                    <thead>
+                        <td>Time</td>
+                        <td style="text-align: center;">Profile Image</td>
+                        <td>Username</td>
+                        <td>Followers Count</td>
+                        <td>Following Count</td>
+                        <td>Reply To</td>
+                        <td>Text</td>
+                        <td>Likes</td>
+                        <td>Retweet Count</td>
+                        <td>Sentiment Polarity</td>
+                        <td style="text-align: center;">Conclusion</td>
+                    </thead>
+                    {% for data in data1 %}
+                    {% if data.offensive_or_not == "Offensive" %}
+                    <tr>
+                        <td class="borderColor borderColor-left"> {{data.time|user_profile}} </td>
+                        <td class="borderColor" style="text-align: center;"> <img src="{{data.profile_img_url|user_profile}}" alt="{{data.username}}" /> </td>
+                        <td class="borderColor">
+                            <form method="POST" action="{% url 'twitterPage' %}">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{data.username}}" name="usernames" />
+                                <input type="submit" value="{{data.username}}" style="padding: 0;margin: 0;background: none;border: none;" />
+                            </form>
+                        </td>
+                        <td class="borderColor"> {{data.followers_count|user_likes}} </td>
+                        <td class="borderColor"> {{data.following_count|user_likes}} </td>
+                        <td class="borderColor"> {{data.reply_to|user_profile}} </td>
+                        <td class="borderColor" style="font-weight: bold;"> {{data.text|user_profile}} </td>
+                        <td class="borderColor"> {{data.likes|user_likes}} </td>
+                        <td class="borderColor"> {{data.retweet_count|user_likes}} </td>
+                        <td class="borderColor"> {{data.sentiment_polarity}} </td>
+                        <td class="borderColor borderColor-right"> {{data.offensive_or_not}} </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td> {{data.time|user_profile}} </td>
+                        <td style="text-align: center;"> <img src="{{data.profile_img_url|user_profile}}" alt="{{data.username}}" /> </td>
+                        <td>
+                            <form method="POST" action="{% url 'twitterPage' %}">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{data.username}}" name="usernames" />
+                                <input type="submit" value="{{data.username}}" class="hashtag-username-form" />
+                            </form>    
+                        </td>
+                        <td> {{data.followers_count|user_likes}} </td>
+                        <td> {{data.following_count|user_likes}} </td>
+                        <td> {{data.reply_to|user_profile}} </td>
+                        <td style="font-weight: bold;"> {{data.text|user_profile}} </td>
+                        <td> {{data.likes|user_likes}} </td>
+                        <td> {{data.retweet_count|user_likes}} </td>
+                        <td> {{data.sentiment_polarity}} </td>
+                        <td style="text-align: center;"> {{data.offensive_or_not}} </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div style="height: 2em;"></div>
+
+    {% endif %}
+
+    {% if data %}
+    {% for data in data %}
+
+    <div class="user-container">
+        <div class="container">
+            <div style="height: 3em;"></div>
+            <div class="profile"></div>
+
+            <div class="user-header-name" style="font-size: 2em;font-weight: bold;margin: 1em 0;">{{data.user_profile.name|user_profile}}</div>
+            <div class="profile-grid">
+                <div style="display: flex;flex-direction: column;justify-content: center;">
+                    <img src="{{data.user_profile.profile_photo}}" style="margin: 0 auto;" />
+                    <div style="margin: 0.5em 0;">
+                        <div class="twitter-upper-username">{{data.username|user_profile}}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="user_data_context" style="margin-top: 0;">
+                        <div><i class="fas fa-user"></i></div>
+                        <div>{{data.user_profile.biography|user_profile}}</div>
+                    </div>
+                    <div class="user_data_context">
+                        <div><i class="fas fa-birthday-cake"></i></div>
+                        <div>{{data.user_profile.birthday|user_birthday}}</div>
+                    </div>
+                    <div class="user_data_context">
+                        <div><i class="fa fa-link"></i></div>
+                        <div>{{data.user_profile.website|user_website}}</div>
+                    </div>
+                    <div style="height: 1em;"></div>
+                    <div class="user_data_context_grid">
+                        <div class="user_data_context">
+                            <div><i class="far fa-thumbs-up"></i></div>
+                            <div>{{data.user_profile.likes_count|user_likes}} Likes</div>
+                        </div>
+                        <div class="user_data_context">
+                            <div><i class="fab fa-twitter"></i></div>
+                            <div>{{data.user_profile.tweets_count|user_likes}} Tweets</div>
+                        </div>
+                        <div class="user_data_context">
+                            <div><i class="fas fa-walking"></i></div>
+                            <div>{{data.user_profile.followers_count|user_likes}} Followers</div>
+                        </div>
+                        <div class="user_data_context">
+                            <div><i class="far fa-flag"></i></div>
+                            <div>{{data.user_profile.following_count|user_likes}} Following</div>
+                        </div>
+                    </div>
+                    <div style="height: 1em;"></div>
+                    <a class="viewProfileBtn" href="https://twitter.com/{{data.username}}" target="_blank">View Profile in Twitter</a>
+                </div>
+            </div>
+            <input type="hidden" value="{{data.username}}" id="username" />
+            <input type="button" class="GetUserNameBtn" id="suspect-{{data.username}}" value="Add to Suspect List" onclick="addSuspect('{{data.username}}');" />
+            
+            <div style="height: 1em;"></div>
+            <div class="twitter-table-container">
+                <table>
+                    <thead>
+                        <td>Time</td>
+                        <td>Retweeted?</td>
+                        <td>Tweets</td>
+                        <td>Replies</td>
+                        <td>Retweets</td>
+                        <td>Likes</td>
+                        <td>Sentiment Polarity</td>
+                        <td style="text-align: center;">Conclusion</td>
+                    </thead>
+                    {% for data in data.data %}
+                    {% if data.offensive_or_not == "Offensive" %}
+                    <tr>
+                        <td class="borderColor borderColor-left"> {{data.time|user_profile}} </td>
+                        <td class="borderColor"> {{data.isRetweet|user_profile}} </td>
+                        <td class="borderColor" style="font-weight: bold;"> {{data.text|user_profile}} </td>
+                        <td class="borderColor"> {{data.replies|user_profile}} </td>
+                        <td class="borderColor"> {{data.retweets|user_profile}} </td>
+                        <td class="borderColor"> {{data.likes|user_profile}} </td>
+                        <td class="borderColor"> {{data.sentiment_polarity}} </td>
+                        <td class="borderColor borderColor-right"> {{data.offensive_or_not}} </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td> {{data.time|user_likes}} </td>
+                        <td> {{data.isRetweet|user_likes}} </td>
+                        <td style="font-weight: bold;"> {{data.text|user_likes}} </td>
+                        <td> {{data.replies|user_likes}} </td>
+                        <td> {{data.retweets|user_likes}} </td>
+                        <td> {{data.likes|user_likes}} </td>
+                        <td> {{data.sentiment_polarity}} </td>
+                        <td style="text-align: center;"> {{data.offensive_or_not}} </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div style="height: 2em;"></div>
+
+
+    {% endfor %}
+    {% endif %}
+    {% endblock %}

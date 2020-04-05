@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% load staticfiles %} {% block head %}
+<title>BlackNet</title>
+<link href="{% static 'css/main.css' %}" rel="stylesheet" />
+{% endblock %} {% block content %}
+<div class="centralize">
+  <div class="main-heading">Welcome to Black Net</div>
+  <div style="height: 5em;"></div>
+  <div class="main-sub-head">Please Select Your Social Platform</div>
+  <div style="height: 3em;"></div>
+  <div class="social-con">
+    <div
+      class="social-selector"
+      style="display: none;"
+      id="facebook-selector"
+      onclick="addActiveClassSelector('facebook-selector');"
+    >
+      <i class="fab fa-facebook-f"></i>
+      Facebook
+    </div>
+    <div
+      class="social-selector"
+      id="twitter-selector"
+      onclick="addActiveClassSelector('twitter-selector')"
+    >
+      <i class="fab fa-twitter"></i>
+      Twitter
+    </div>
+  </div>
+  <div style="height: 2em;"></div>
+  <form method="POST" action="{% url 'home' %}">
+    {% csrf_token %}
+    <input type="hidden" name="page_request" id="submit-val" value="" />
+    <div class="proceed-btn" id="proceed-btn-prev">Proceed</div>
+    <input
+      type="submit"
+      value="Proceed"
+      class="proceed-btn proceed-active"
+      style="display: none;"
+      id="proceed-btn"
+    />
+  </form>
+</div>
+{% endblock %}
