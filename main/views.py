@@ -16,10 +16,11 @@ warnings.simplefilter('ignore')
 from blacknet.settings import BASE_DIR
 from .models import SuspectList
 
-consumer_key = "ri2JedD578SUg4ZUPhvzdAwYg"
-consumer_secret = "EmDtL89j5e1DvBgth0BbN7qmfBuV23IxGIf1oGoUOWfOyzWX2D"
-access_token = "947748540532498432-no5SFmH3a50FRFMTNHRbzjBr00H9Qvv"
-access_token_secret = "NNGTM7gJrHRtD46tQwM07QpAE54hh553p5NzzokdsEGlH"
+consumer_key = 'nblgiZGKmb9XhK1IrRJI8IYJg'
+consumer_secret = 'gttJPns2RfpYz0KNr3CWzK8apIbTT0jGHLegDSJBdR8fXEt0UJ'
+
+access_token = '984160572739543040-7K8YTQirqEXqGm5VQRrBn4wpE5QRH1C'
+access_token_secret = 'LkTEgW4mGJN7mNbNE1JDqQ9dCmc7QGdxNUIhnoHjJvY2S'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
