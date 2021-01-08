@@ -42,7 +42,7 @@ psycopg2==2.8.4
 psycopg2-binary==2.7.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-pycryptodome==3.4.3
+pycryptodome==3.6.6
 pyee==7.0.1
 pyparsing==2.4.6
 pyppeteer==0.0.25
